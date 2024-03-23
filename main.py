@@ -26,21 +26,29 @@ class Data(BaseModel):
     hours_per_week: int = Field(..., example=40, alias="hours-per-week")
     native_country: str = Field(..., example="United-States", alias="native-country")
 
-path = # TODO: enter the path for the saved encoder 
-encoder = load_model(path)
+encoder_path = os.path.join(project_path, "model", "encoder.pkl")
+encoder = load_model(encoder_path)
 
-path = # TODO: enter the path for the saved model 
-model = load_model(path)
+model_path = os.path.join(project_path, "model", "model.pkl") 
+model = load_model(model_path)
 
-# TODO: create a RESTful API using FastAPI
-app = # your code here
+app = FastAPI(  title="Inference API",
+                description="An API that takes a sample and runs an inference",
+                version="1.0.0")
 
-# TODO: create a GET on the root giving a welcome message
+# load model artifacts on startup of the application to reduce latency
+@app.on_event("startup")
+async def startup_event(): 
+    global model, encoder, lb
+    # if saved model exits, load the model from disk
+    if os.path.isfile(model_path):
+        model = pickle.load(open(model_path, "rb"))
+        encoder = pickle.load(open(encoder_path, "rb"))
+        
+
 @app.get("/")
-async def get_root():
-    """ Say hello!"""
-    # your code here
-    pass
+async def greetings():
+    return "Welcome The Project API"
 
 
 # TODO: create a POST on a different path that does model inference
@@ -64,11 +72,11 @@ async def post_inference(data: Data):
         "sex",
         "native-country",
     ]
-    data_processed, _, _, _ = process_data(
-        # your code here
-        # use data as data input
-        # use training = False
-        # do not need to pass lb as input
-    )
-    _inference = # your code here to predict the result using data_processed
+    data_processed, _, _, _ = process_data(data_processed, 
+                                           categorical_features=cat_features, 
+                                           training=False, 
+                                           encoder=encoder, 
+                                           lb=lb
+                                          )
+    _inference = model.predict(data_processed)
     return {"result": apply_label(_inference)}

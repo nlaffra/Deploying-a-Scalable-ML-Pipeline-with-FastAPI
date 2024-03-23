@@ -36,4 +36,4 @@ p = requests.post("http://127.0.0.1:8000",json = data)
 # print the status code
 print(p.status_code)
 # print the result
-print(requests.post(p, params=data))
+print(asyncio.run(main.post_inference()))

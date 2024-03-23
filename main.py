@@ -3,10 +3,12 @@ import pickle
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
-
+from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
 from ml.data import apply_label, process_data
 from ml.model import inference, load_model
 project_path = "/home/nlaffra/ml-pipeline-reset"
+lb = LabelBinarizer()
+encoder = OneHotEncoder()
 # DO NOT MODIFY
 class Data(BaseModel):
     age: int = Field(..., example=37)

@@ -48,7 +48,7 @@ async def startup_event():
 
 @app.get("/")
 async def greetings():
-    return "Welcome The Project API"
+    return "Welcome to The Project API"
 
 
 # TODO: create a POST on a different path that does model inference

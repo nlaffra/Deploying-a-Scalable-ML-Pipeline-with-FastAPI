@@ -31,7 +31,7 @@ data = {
 }
 
 # send a POST using the data above
-p = requests.post("http://127.0.0.1:8000",json = data)
+p = requests.post("http://127.0.0.1:8000/data",json = data)
 
 # print the status code
 print(p.status_code)

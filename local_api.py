@@ -1,5 +1,5 @@
 import json
-
+import main
 import requests
 
 # TODO: send a GET using the URL http://127.0.0.1:8000
